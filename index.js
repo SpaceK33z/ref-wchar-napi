@@ -1,10 +1,9 @@
-
 /**
  * Module dependencies.
  */
 
 var ref = require('ref-napi');
-var Iconv = require('iconv').Iconv;
+var iconv = require('iconv-lite');
 
 /**
  * On Windows they're UTF-16 (2-bytes),
@@ -20,37 +19,34 @@ if ('win32' == process.platform) {
   size = 4;
 }
 
-var getter = new Iconv('UTF-' + (8 * size) + ref.endianness, 'UTF-8');
-var setter = new Iconv('UTF-8', 'UTF-' + (8 * size) + ref.endianness);
-
+var encoding = 'UTF-' + 8 * size + ref.endianness;
 
 /**
  * The `wchar_t` type.
  */
 
-exports = module.exports = Object.create(ref.types['int' + (8 * size)]);
+exports = module.exports = Object.create(ref.types['int' + 8 * size]);
 exports.name = 'wchar_t';
 exports.size = size;
 exports.indirection = 1;
-exports.get = function get (buf, offset) {
+exports.get = function get(buf, offset) {
   if (offset > 0 || buf.length !== exports.size) {
     offset = offset | 0;
     buf = buf.slice(offset, offset + size);
   }
   return exports.toString(buf);
 };
-exports.set = function set (buf, offset, val) {
+exports.set = function set(buf, offset, val) {
   var _buf = val; // assume val is a Buffer by default
   if (typeof val === 'string') {
-    _buf = setter.convert(val[0]);
+    _buf = iconv.encode(val[0], encoding);
   } else if (typeof val === 'number') {
-    _buf = setter.convert(String.fromCharCode(val));
+    _buf = iconv.encode(String.fromCharCode(val), encoding);
   } else if (!_buf) {
     throw new TypeError('muss pass a String, Number, or Buffer for `wchar_t`');
   }
   return _buf.copy(buf, offset, 0, size);
 };
-
 
 /**
  * The "wchar_t *" type.
@@ -61,7 +57,7 @@ exports.set = function set (buf, offset, val) {
 
 exports.string = Object.create(ref.types.CString);
 exports.string.name = 'WCString';
-exports.string.get = function get (buf, offset) {
+exports.string.get = function get(buf, offset) {
   var _buf = buf.readPointer(offset);
   if (_buf.isNull()) {
     return null;
@@ -69,10 +65,10 @@ exports.string.get = function get (buf, offset) {
   var stringBuf = _buf.reinterpretUntilZeros(exports.size);
   return exports.toString(stringBuf);
 };
-exports.string.set = function set (buf, offset, val) {
+exports.string.set = function set(buf, offset, val) {
   var _buf = val; // val is a Buffer? it better be \0 terminated...
   if ('string' == typeof val) {
-    _buf = setter.convert(val + '\0');
+    _buf = iconv.encode(val + '\0', encoding);
   }
   return buf.writePointer(_buf, offset);
 };
@@ -84,6 +80,6 @@ exports.string.set = function set (buf, offset, val) {
  * @public
  */
 
-exports.toString = function toString (buffer) {
-  return getter.convert(buffer).toString('utf8');
+exports.toString = function toString(buffer) {
+  return iconv.decode(buffer, encoding);
 };
