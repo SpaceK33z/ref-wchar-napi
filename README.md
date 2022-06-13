@@ -44,7 +44,7 @@ EXPORT wchar_t **str = (wchar_t **)(&s);
 ``` js
 var ref = require('ref-napi');
 var dlfcn = require('dlfcn');
-var wchar_t = require('ref-wchar-napi');
+var wchar_t = require('@spacek33z/ref-wchar-napi');
 var wchar_string = wchar_t.string;
 
 var lib = dlfcn('./libexample');
