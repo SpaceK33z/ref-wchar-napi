@@ -1,12 +1,14 @@
-ref-wchar-napi
+@spacek33z/ref-wchar-napi
 ==========
-### A ref "type" implementation of `wchar_t *` (a.k.a. wide string) backed by "node-iconv"
-[![Build Status](https://secure.travis-ci.org/Janealter/ref-wchar-napi.svg)](https://travis-ci.org/Janealter/ref-wchar-napi)
-[![Build Status](https://ci.appveyor.com/api/projects/status/v5ej12uqw1u0379j?svg=true)](https://ci.appveyor.com/project/Janealter/ref-wchar-napi)
+### A ref "type" implementation of `wchar_t *` (a.k.a. wide string) backed by "iconv-lite"
+[![Build Status](https://secure.travis-ci.org/SpaceK33z/ref-wchar-napi.svg)](https://travis-ci.org/SpaceK33z/ref-wchar-napi)
+[![Build Status](https://ci.appveyor.com/api/projects/status/v5ej12uqw1u0379j?svg=true)](https://ci.appveyor.com/project/SpaceK33z/ref-wchar-napi)
 
 This module offers a ["wide
 strings"](http://en.wikipedia.org/wiki/Wide_character#C.2FC.2B.2B) (`wchar_t *`)
 implementation on top of Node.js Buffers using the ref "type" interface. Supports Node 6, 7, 8, 10, 12.
+
+**This is a fork of ref-wchar-napi, which uses iconv. This fork uses iconv-lite, which is as implied, is way liter.*
 
 
 Installation
@@ -15,7 +17,7 @@ Installation
 Install with `npm`:
 
 ``` bash
-$ npm install ref-wchar-napi
+$ npm install @spacek33z/ref-wchar-napi
 ```
 
 
